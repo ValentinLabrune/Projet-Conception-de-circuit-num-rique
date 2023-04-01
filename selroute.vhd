@@ -3,22 +3,21 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity selroute is
     Port ( 
-            SEL_ROUTE : in STD_LOGIC_VECTOR (3 downto 0);
-            S : in STD_LOGIC_VECTOR (7 downto 0);
-            A : in STD_LOGIC_VECTOR (3 downto 0);
-            B : in STD_LOGIC_VECTOR (3 downto 0);
-            Buf_A_out : in STD_LOGIC_VECTOR (3 downto 0);
-            Buf_B_out : in STD_LOGIC_VECTOR (3 downto 0);
-            Mem_1_out : in STD_LOGIC_VECTOR (7 downto 0);
-            Mem_2_out : in STD_LOGIC_VECTOR (7 downto 0);
-            Buf_A_in : out STD_LOGIC_VECTOR (3 downto 0);
-            Buf_B_in : out STD_LOGIC_VECTOR (3 downto 0);
-            Mem_1_In : out STD_LOGIC_VECTOR (7 downto 0);
-            Mem_2_In : out STD_LOGIC_VECTOR (7 downto 0);
-            CE_Buf_A : out STD_LOGIC;
-            CE_Buf_B : out STD_LOGIC;
-            CE_Mem_1 : out STD_LOGIC;
-            CE_Mem_2 : out STD_LOGIC            
+        -- Sel route
+        Buf_A_out : in STD_LOGIC_VECTOR (3 downto 0);
+        Buf_B_out : in STD_LOGIC_VECTOR (3 downto 0);
+        Mem_1_out : in STD_LOGIC_VECTOR (7 downto 0);
+        Mem_2_out : in STD_LOGIC_VECTOR (7 downto 0);
+        Buf_A_in : out STD_LOGIC_VECTOR (3 downto 0);
+        Buf_B_in : out STD_LOGIC_VECTOR (3 downto 0);
+        Mem_1_In : out STD_LOGIC_VECTOR (7 downto 0);
+        Mem_2_In : out STD_LOGIC_VECTOR (7 downto 0);
+        S : in STD_LOGIC_VECTOR (7 downto 0);
+        CE_Buf_A : out STD_LOGIC;
+        CE_Buf_B : out STD_LOGIC;
+        CE_Mem_1 : out STD_LOGIC;
+        CE_Mem_2 : out STD_LOGIC  
+    
     );
 end selroute;
 
