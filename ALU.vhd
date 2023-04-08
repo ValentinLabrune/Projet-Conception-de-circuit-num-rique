@@ -1,124 +1,154 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.std_logic_unsigned.all;
 
 entity ALUCompo is
 port(
-
-    BuffA : in std_logic_vector(3 downto 0);
-    BuffB : in std_logic_vector(3 downto 0);
-    SR_IN : in std_logic_vector(1 downto 0);
+    -- entrées
+    A : in std_logic_vector(3 downto 0);
+    B : in std_logic_vector(3 downto 0);
+    SR_IN_L : in std_logic := '0';
+    SR_IN_R : in std_logic := '0';
+    
+    -- sel fct
     SEL_FCT_MEM : in std_logic_vector(3 downto 0);
 
-    CLK : in std_logic;
-    RESET : in std_logic;
-
-    S_OUT : out std_logic_vector(7 downto 0);
-    SR_OUT : out std_logic_vector(1 downto 0)
+    -- sorties  
+    S : out std_logic_vector(7 downto 0);
+    SR_OUT_L : out std_logic := '0';
+    SR_OUT_R : out std_logic := '0'
 );
 end ALUCompo;
 
 architecture arch_ALUCompo of ALUCompo is
-    signal BuffA, BuffB : signed(3 downto 0);
-    signal S_OUT : signed(7 downto   0);
-    signal carry_in, carry_out : std_logic;
+    signal My_A, My_B : std_logic_vector(3 downto 0);
+    signal My_S : std_logic_vector(7 downto   0);
+    signal My_SR_IN_L, My_SR_IN_R, My_SR_OUT_L, My_SR_OUT_R : std_logic;
+    signal My_SEL_FCT_MEM : std_logic_vector(3 downto 0);
 
    begin
 
-        ALUProc : process(BuffA, BuffB, SR_IN, SEL_FCT_MEM, CLK, RESET)
+        ALUCompo_Proc : process(A, B, SR_IN_L, SR_IN_R, SEL_FCT_MEM)
+            variable S_var, A_var, B_var : std_logic_vector(7 downto 0);
         begin
-            -- if RESET = '1' then
-            -- SR_OUT(0) <= '0';
-            -- SR_OUT(1) <= '0';
-            -- S_OUT <= (others => '0');
-            -- carry_in <= '0';
-            -- S_OUT <= (others => '0');
-            -- elsif rising_edge(CLK) then
-            case SEL_FCT_MEM is
-                when "0000" => -- no op
-                S_OUT <= '0';
-                when "0001" => -- shift right B
-                    SR_OUT(1) = BuffB(0);
-                    S_OUT(2 downto 0) <= BuffB (3 downto 1)
-                    S_OUT(3) =  SR_IN(0)
-                    SR_OUT(0) <= '0';
-                    
-                when "0010" => -- shift left B
-                    SR_OUT(0) = BuffB(3);
-                    S_OUT(3 downto 1) <= BuffB (2 downto 0)
-                    S_OUT(0) = SR_IN(1)
-                    SR_OUT(1) <= '0';
+              case SEL_FCT_MEM is
+                  when "0000" => -- no op : toutes les sorties a 0
+                      S <= "00000000";
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
 
-                when "0011" => -- A 
-                    S_OUT <= BuffA;
-                    SR_OUT(0) <= '0';
-                    SR_OUT(1) <= '0';
-                
-                when "0100" => -- B
-                    S_OUT <= BuffB;
-                    SR_OUT(0) <= '0';
-                    SR_OUT(1) <= '0';
-                
-                when "0101" => -- not A
-                    S_OUT <= not BuffA;
-                    SR_OUT(0) <= '0';
-                    SR_OUT(1) <= '0';
-                
-                when "0110" => -- not B
-                    S_OUT <= not BuffB;
-                    SR_OUT(0) <= '0';
-                    SR_OUT(1) <= '0';
-                
-                when "0111" => -- A and B
-                    S_OUT <= BuffA and BuffB;
-                    SR_OUT(0) <= '0';
-                    SR_OUT(1) <= '0';
-                
-                when "1000" => -- A or B
-                    S_OUT <= BuffA or BuffB;
-                    SR_OUT(0) <= '0';
-                    SR_OUT(1) <= '0';
-                
-                when "1001" => -- A xor B
-                    S_OUT <= BuffA xor BuffB;
-                    SR_OUT(0) <= '0';
-                    SR_OUT(1) <= '0';
-                
-                when "1010"=> -- A + B with carry in
-                    carry_out <= BuffA(0) and BuffB(0);
-                    S_OUT <= BuffA + BuffB + unsigned(carry_in);
-                    SR_OUT(0) <= '0';
-                    SR_OUT(1) <= '0';
-                
-                when "1011" => -- addition binaire sans retenue d’entrée
-                    S_OUT <= BuffA + BuffB;
-                    SR_OUT(0) <= '0';
-                    SR_OUT(1) <= '0';
-                
-                when "1100"=> -- soustraction binaire
-                    S_OUT <= BuffA - BuffB;
-                    SR_OUT(0) <= '0';
-                    SR_OUT(1) <= '0';
+                  when "0001" => -- S = décallage à droite B sur 4 bits, SR_IN_L bit entrant
+                      S(7 downto 4) <= (others => '0');
+                      S(3) <= SR_IN_L;
+                      S(2 downto 0) <= B(3 downto 1);
+                      SR_OUT_R <= B(0);
+                      SR_OUT_L <= '0';
 
-                when "1101" => -- multiplication binaire
-                    S_OUT <= BuffA * BuffB;
-                    SR_OUT(0) <= '0';
-                    SR_OUT(1) <= '0';
+                  when "0010" => -- S = décallage à gauche B sur 4 bits, SR_IN_R bit entrant
+                      S(7 downto 4) <= (others => '0');
+                      S(0) <= SR_IN_R;
+                      S(3 downto 1) <= B(2 downto 0);
+                      SR_OUT_L <= B(3);
+                      SR_OUT_R <= '0';
 
-                when "1110"=> -- Déc. droite A sur 4 bits(avec  SR_IN(0))
-                    SR_OUT(1) = BuffA(0);
-                    S_OUT(2 downto 0) <= BuffA (3 downto 1)
-                    S_OUT(3) =  SR_IN(0)
-                    SR_OUT(0) <= '0';
+                  when "0011" => -- S = A
+                      S(7 downto 4) <= (others => '0');
+                      S(3 downto 0) <= A;
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
 
-                when "1111"=> -- Déc. gauche A sur 4 bits (avec SR_IN(1))
-                    SR_OUT(0) = BuffA(3);
-                    S_OUT(3 downto 1) <= BuffA (2 downto 0)
-                    S_OUT(0) = SR_IN(1)
-                    SR_OUT(1) <= '0';
-                end case;
-            end if;
-            S_OUT <= SR_OUT(1) & SR_OUT(0);
+                  when "0100" => -- S = B
+                      S(7 downto 4) <= (others => '0');
+                      S(3 downto 0) <= B;
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
+
+                  when "0101" => -- S = not A
+                      S(7 downto 4) <= (others => '0');
+                      S(3 downto 0) <= not A;
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
+
+                  when "0110" => -- S = not B
+                      S(7 downto 4) <= (others => '0');
+                      S(3 downto 0) <= not B;
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
+
+                  when "0111" => -- S = A and B
+                      S(7 downto 4) <= (others => '0');
+                      S(3 downto 0) <= A and B;
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
+
+                  when "1000" => -- S = A or B
+                      S(7 downto 4) <= (others => '0');
+                      S(3 downto 0) <= A or B;
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
+
+                  when "1001" => -- S = A xor B
+                      S(7 downto 4) <= (others => '0');
+                      S(3 downto 0) <= A xor B;
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
+
+                  when "1010" => -- S = A + B, SR_IN_R = retenue d'entrée
+                      A_var(3 downto 0) := A;
+                      A_var(7 downto 4) := (others => A(3));
+                      B_var(3 downto 0) := B;
+                      B_var(7 downto 4) := (others => B(3));
+                      S_var := A_var + B_var;
+                      S_var := S_var + ("00000000" & SR_IN_R);
+                      S <= S_var;
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
+
+                  when "1011" => -- S = A + B, pas de retenue d'entrée
+                      A_var(3 downto 0) := A;
+                      A_var(7 downto 4) := (others => A(3));
+                      B_var(3 downto 0) := B;
+                      B_var(7 downto 4) := (others => B(3));
+                      S_var := A_var + B_var;
+                      S <= S_var;
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
+
+                  when "1100" => -- S = A - B binaire
+                      A_var(3 downto 0) := A;
+                      A_var(7 downto 4) := (others => A(3));
+                      B_var(3 downto 0) := B;
+                      B_var(7 downto 4) := (others => B(3));
+                      S_var := A_var - B_var;
+                      S <= S_var;
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
+
+                  when "1101" => -- S = A * B
+                      S <= A * B;
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
+
+                  when "1110" => -- S = décallage à droite A sur 4 bits, SR_IN_L bit entrant
+                      S(7 downto 4) <= (others => '0');
+                      S(3) <= SR_IN_L;
+                      S(2 downto 0) <= A(3 downto 1);
+                      SR_OUT_R <= A(0);
+                      SR_OUT_L <= '0';
+
+                  when "1111" => -- S = décallage à gauche A sur 4 bits, SR_IN_R bit entrant
+                      S(7 downto 4) <= (others => '0');
+                      S(0) <= SR_IN_R;
+                      S(3 downto 1) <= A(2 downto 0);
+                      SR_OUT_L <= A(3);
+                      SR_OUT_R <= '0';
+
+                  when others =>
+                  	S <= "00000000";
+                      SR_OUT_L <= '0';
+                      SR_OUT_R <= '0';
+              end case;
         end process;
 end arch_ALUCompo;
 
