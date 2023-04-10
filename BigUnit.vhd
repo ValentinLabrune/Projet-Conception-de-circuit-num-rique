@@ -23,7 +23,7 @@ entity BigUnit is
         -- sorties
         SR_OUT_L_G : out std_logic;
         SR_OUT_R_G : out std_logic;
-        RES_OUT : out std_logic_vector (7 downto 0)
+        RES_OUT_G : out std_logic_vector (7 downto 0)
     );
 end BigUnit;
 
@@ -72,7 +72,7 @@ architecture BigUnit_Arch of BigUnit is
     signal My_A, My_B : std_logic_vector (3 downto 0);
     signal My_SR_IN_L, My_SR_IN_R : std_logic;
     signal My_SR_OUT_L, My_SR_OUT_R : std_logic;
-    signal My_RES_OUT : std_logic_vector (7 downto 0);
+    signal My_RES_OUT_G : std_logic_vector (7 downto 0);
     
 
     begin
@@ -138,7 +138,7 @@ architecture BigUnit_Arch of BigUnit is
                 SR_IN_L => My_SR_IN_L,
                 SR_IN_R => My_SR_IN_R,
                 SEL_FCT => SEL_FCT_IN,
-                S => My_RES_OUT,
+                S => My_RES_OUT_G,
                 SR_OUT_L => My_SR_OUT_L,
                 SR_OUT_R => My_SR_OUT_R
             );
@@ -154,7 +154,7 @@ architecture BigUnit_Arch of BigUnit is
             if (rising_edge(clock_IN)) then
                 case SEL_ROUTE_IN is
                     when "0000" => 
-                        My_Mem_cache1_IN <= My_RES_OUT;
+                        My_Mem_cache1_IN <= My_RES_OUT_G;
                     when "0001" =>
                         My_BufferA_IN <= My_Mem_cache2_OUT(3 downto 0);
                     when "0010" => 
@@ -164,13 +164,13 @@ architecture BigUnit_Arch of BigUnit is
                     when "0100" =>
                         My_BufferA_IN <= My_Mem_cache1_OUT(7 downto 4);
                     when "0101" =>
-                        My_BufferA_IN <= My_RES_OUT(3 downto 0);
+                        My_BufferA_IN <= My_RES_OUT_G(3 downto 0);
                     when "0110" =>
-                        My_BufferA_IN <= My_RES_OUT(7 downto 4);
+                        My_BufferA_IN <= My_RES_OUT_G(7 downto 4);
                     when "0111" =>
                         My_BufferA_IN <= A_IN;
                     when "1000" =>
-                        My_Mem_cache2_IN <= My_RES_OUT;
+                        My_Mem_cache2_IN <= My_RES_OUT_G;
                     when "1001" =>
                         My_BufferB_IN <= My_Mem_cache2_OUT(3 downto 0);
                     when "1010" =>
@@ -180,9 +180,9 @@ architecture BigUnit_Arch of BigUnit is
                     when "1100" =>
                         My_BufferB_IN <= My_Mem_cache1_OUT(7 downto 4);
                     when "1101" =>
-                        My_BufferB_IN <= My_RES_OUT(3 downto 0);
+                        My_BufferB_IN <= My_RES_OUT_G(3 downto 0);
                     when "1110" =>
-                        My_BufferB_IN <= My_RES_OUT(7 downto 4);
+                        My_BufferB_IN <= My_RES_OUT_G(7 downto 4);
                     when "1111" =>
                         My_BufferB_IN <= B_IN;
                     when others =>
@@ -192,13 +192,13 @@ architecture BigUnit_Arch of BigUnit is
             if rising_edge(clock) then
                 case SEL_OUT_IN is
                     when "00" =>
-                        RES_OUT <= (others => '0');
+                        RES_OUT_G <= (others => '0');
                     when "01" =>
-                        RES_OUT <= My_Mem_cache1;
+                        RES_OUT_G <= My_Mem_cache1;
                     when "10" =>
-                        RES_OUT <= My_Mem_cache2;
+                        RES_OUT_G <= My_Mem_cache2;
                     when "11" =>
-                        RES_OUT <= My_RES_OUT;
+                        RES_OUT_G <= My_RES_OUT_G;
                     when others =>
                 end case;
             end if;
