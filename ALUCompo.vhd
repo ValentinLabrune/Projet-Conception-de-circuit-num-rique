@@ -12,7 +12,7 @@ port(
     SR_IN_R : in std_logic := '0';
     
     -- sel fct
-    SEL_FCT_MEM : in std_logic_vector(3 downto 0);
+    SEL_FCT : in std_logic_vector(3 downto 0);
 
     -- sorties  
     S : out std_logic_vector(7 downto 0);
@@ -25,14 +25,14 @@ architecture arch_ALUCompo of ALUCompo is
     signal My_A, My_B : std_logic_vector(3 downto 0);
     signal My_S : std_logic_vector(7 downto   0);
     signal My_SR_IN_L, My_SR_IN_R, My_SR_OUT_L, My_SR_OUT_R : std_logic;
-    signal My_SEL_FCT_MEM : std_logic_vector(3 downto 0);
+    signal My_SEL_FCT : std_logic_vector(3 downto 0);
 
    begin
 
-        ALUCompo_Proc : process(A, B, SR_IN_L, SR_IN_R, SEL_FCT_MEM)
+        ALUCompo_Proc : process(A, B, SR_IN_L, SR_IN_R, SEL_FCT)
             variable S_var, A_var, B_var : std_logic_vector(7 downto 0);
         begin
-              case SEL_FCT_MEM is
+              case SEL_FCT is
                   when "0000" => -- no op : toutes les sorties a 0
                       S <= "00000000";
                       SR_OUT_L <= '0';
