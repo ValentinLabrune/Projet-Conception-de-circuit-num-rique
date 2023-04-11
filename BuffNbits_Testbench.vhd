@@ -8,7 +8,7 @@ end BufferNbitsTestbench;
 
 architecture BufferNbitsTestbench_Arch of BufferNbitsTestbench is
 
-    component BufferNbits is
+    component bufferNbits is
         generic(N : integer);
         port(
             e : in std_logic_vector (N-1 downto 0);
@@ -24,7 +24,7 @@ architecture BufferNbitsTestbench_Arch of BufferNbitsTestbench is
 
 begin
 
-    buffNbits_inst : BufferNbits
+    buffNbits_inst : bufferNbits
         generic map (N => 2)
         port map(
             e => my_e,
