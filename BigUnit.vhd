@@ -46,7 +46,7 @@ architecture BigUnit_Arch of BigUnit is
         );
     end component;
 
-    component BufferNbits is 
+    component bufferNbits is 
         generic(
             N : integer
         );
@@ -77,7 +77,7 @@ architecture BigUnit_Arch of BigUnit is
 
     begin
 
-        BufferA : BufferNbits
+        BufferA : bufferNbits
             generic map (N => 4)
             port map(
                 e => My_BufferA_IN,
@@ -86,7 +86,7 @@ architecture BigUnit_Arch of BigUnit is
                 s => My_BufferA_OUT
             );
         
-        BufferB : BufferNbits
+        BufferB : bufferNbits
             generic map (N => 4)
             port map(
                 e => My_BufferB_IN,
@@ -95,25 +95,25 @@ architecture BigUnit_Arch of BigUnit is
                 s => My_BufferB_OUT
             );
 
-        BufferSR_L : BufferNbits
+        BufferSR_L : bufferNbits
             generic map (N => 1)
             port map(
-                e => SR_IN_L_G,
+                e(0) => SR_IN_L_G,
                 reset => reset_IN,
                 clock => clock_IN,
                 s => My_BufferSR_IN_L_OUT 
             );
 
-        BufferSR_R : BufferNbits
+        BufferSR_R : bufferNbits
             generic map (N => 1)
             port map(
-                e => SR_IN_R_G,
+                e(0) => SR_IN_R_G,
                 reset => reset_IN,
                 clock => clock_IN,
                 s => My_BufferSR_IN_R_OUT
             );
 
-        Mem_cache1 : BufferNbits
+        Mem_cache1 : bufferNbits
             generic map (N => 8)
             port map(
                 e => My_Mem_cache1_IN,
@@ -122,7 +122,7 @@ architecture BigUnit_Arch of BigUnit is
                 s => My_Mem_cache1_OUT
             );
 
-        Mem_cache2 : BufferNbits
+        Mem_cache2 : bufferNbits
             generic map (N => 8)
             port map(
                 e => My_Mem_cache2_IN,
@@ -146,58 +146,62 @@ architecture BigUnit_Arch of BigUnit is
         -- assignation des signaux
         My_A <= My_BufferA_OUT;
         My_B <= My_BufferB_OUT;
-        My_SR_IN_L <= My_BufferSR_IN_L_OUT;
-        My_SR_IN_R <= My_BufferSR_IN_R_OUT;
+        My_SR_IN_L <= My_BufferSR_IN_L_OUT(0);
+        My_SR_IN_R <= My_BufferSR_IN_R_OUT(0);
 
         routingProc : process(clock_IN, reset_IN)
         begin
             if (rising_edge(clock_IN)) then
                 case SEL_ROUTE_IN is
-                    when "0000" => 
+                    when "0000" => -- stockage de S dans Mem_Cache1
                         My_Mem_cache1_IN <= My_RES_OUT_G;
-                    when "0001" =>
+
+                        -- stockage dans bufferA
+                    when "0001" => -- stockage de Mem_Cache2 dans bufferA (4 bits de poids faibles)
                         My_BufferA_IN <= My_Mem_cache2_OUT(3 downto 0);
-                    when "0010" => 
+                    when "0010" => -- stockage de Mem_Cache2 dans bufferA (4 bits de poids forts)
                         My_BufferA_IN <= My_Mem_cache2_OUT(7 downto 4);
-                    when "0011" =>
+                    when "0011" => -- stockage de Mem_Cache1 dans buffer A (4 bits de poids faibles)
                         My_BufferA_IN <= My_Mem_cache1_OUT(3 downto 0);
-                    when "0100" =>
+                    when "0100" =>  -- stockage de Mem_Cache1 dans BufferA (4 bits de poids forts)
                         My_BufferA_IN <= My_Mem_cache1_OUT(7 downto 4);
-                    when "0101" =>
+                    when "0101" => -- stockage de S dans bufferA (4 bits de poids faibles)
                         My_BufferA_IN <= My_RES_OUT_G(3 downto 0);
-                    when "0110" =>
+                    when "0110" => -- stockage de S dans BufferA (4 bits de poids forts) 
                         My_BufferA_IN <= My_RES_OUT_G(7 downto 4);
-                    when "0111" =>
+                    when "0111" => -- stockage de A_IN dans BufferA
                         My_BufferA_IN <= A_IN;
-                    when "1000" =>
+
+                    when "1000" => -- stockage de S dans Mem_Cache2
                         My_Mem_cache2_IN <= My_RES_OUT_G;
-                    when "1001" =>
+
+                    when "1001" => -- stockage de Mem_cache2 dans BufferB ( 4 bits de poids faibles)
                         My_BufferB_IN <= My_Mem_cache2_OUT(3 downto 0);
-                    when "1010" =>
+                    when "1010" => -- stockage de Mem_cache2 dans BufferB ( 4 bits de poids forts)
                         My_BufferB_IN <= My_Mem_cache2_OUT(7 downto 4);
-                    when "1011" =>
+                    when "1011" => -- stockage de Mem_cache1 dans BufferB ( 4 bits de poids faibles)
                         My_BufferB_IN <= My_Mem_cache1_OUT(3 downto 0);
-                    when "1100" =>
+                    when "1100" => -- stockage de Mem_cache1 dans BufferB ( 4 bits de poids forts)
                         My_BufferB_IN <= My_Mem_cache1_OUT(7 downto 4);
-                    when "1101" =>
+                    when "1101" => -- stockage de S dans BufferB (4 bits de poids faibles)
                         My_BufferB_IN <= My_RES_OUT_G(3 downto 0);
-                    when "1110" =>
+                    when "1110" => -- stockage de S dans BufferB (4 bits de poids forts)
                         My_BufferB_IN <= My_RES_OUT_G(7 downto 4);
-                    when "1111" =>
+                    when "1111" => -- stockage de B_IN dans BufferB
                         My_BufferB_IN <= B_IN;
                     when others =>
 
                 end case;
             end if;
-            if rising_edge(clock) then
-                case SEL_OUT_IN is
-                    when "00" =>
+            if rising_edge(clock_IN) then
+                case SEL_OUT_IN is 
+                    when "00" => -- RES_OUT = 0
                         RES_OUT_G <= (others => '0');
-                    when "01" =>
-                        RES_OUT_G <= My_Mem_cache1;
-                    when "10" =>
-                        RES_OUT_G <= My_Mem_cache2;
-                    when "11" =>
+                    when "01" => -- RES_OUT = Mem_cache1
+                        RES_OUT_G <= My_Mem_cache1_OUT;
+                    when "10" => -- RES_OUT = Mem_Cache2 
+                        RES_OUT_G <= My_Mem_cache2_OUT;
+                    when "11" => -- RES_OUT = 0
                         RES_OUT_G <= My_RES_OUT_G;
                     when others =>
                 end case;

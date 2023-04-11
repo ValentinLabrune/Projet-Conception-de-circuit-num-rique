@@ -3,10 +3,10 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 use IEEE.std_logic_signed.all;
 
-entity BuffNbitsTestbench is
-end BuffNbitsTestbench;
+entity BufferNbitsTestbench is
+end BufferNbitsTestbench;
 
-architecture BuffNbitsTestbench_Arch of BuffNbitsTestbench is
+architecture BufferNbitsTestbench_Arch of BufferNbitsTestbench is
 
     component BufferNbits is
         generic(N : integer);
@@ -54,4 +54,4 @@ begin
 
     end process;
 
-end BuffNbitsTestbench_Arch;
+end BufferNbitsTestbench_Arch;
