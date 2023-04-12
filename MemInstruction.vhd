@@ -17,15 +17,16 @@ end MemInstruction;
 architecture MemInstruction_Arch of MemInstruction is
 
     -- memoire
-    type memory is array (0 to 127) of std_logic_vector (9 downto 0);
-    signal pointeur : integer range 0 to 127 := 0;
+    type memory is array (0 to 3) of std_logic_vector (9 downto 0); -- (0 to 127) pour la memoire 128bits
+    signal pointeur : integer range 0 to 3 := 0; -- 0 to 127 pour que le compteur aille jusqu'a 127
 
     constant MemInstruction : memory := (
-        ("0000000000"),
-        ("0000000000"),
+        ("0010000111"),
+        ("0011111001"),
         
         -- ajouter les 127 autres lignes
-        ("0000000000"),
+        ("1100010010"),
+        ("0110011000")
 
 
     );

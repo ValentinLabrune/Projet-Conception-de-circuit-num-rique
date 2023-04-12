@@ -50,23 +50,26 @@ begin
     begin
         -- test pour décalage à gauche
         My_SEL_FCT <= "0010";
-        My_A <= "0010";
-        My_B <= "0110";
+        My_A <= "1010";
+        My_B <= "0111";
         My_SR_IN_L <= '0';
-        My_SR_IN_R <= '0';
+        My_SR_IN_R <= '1';
         wait for 10 ns;
+        report "décalage a gauche : ";
         report " | SEL_FCT =" & integer'image(to_integer(unsigned(My_SEL_FCT))) & " | My_A = " & integer'image(to_integer(signed(My_A))) & " |My_B = " & integer'image(to_integer(signed(My_B)))  & " | S = " & integer'image(to_integer(signed(My_S))) & " | SR_IN_R = " & std_logic'image(My_SR_IN_R) & " | SR_IN_L = " & std_logic'image(My_SR_IN_L) & " |  SR_OUT_R = " & std_logic'image(My_SR_OUT_R) & " | SR_OUT_L = " & std_logic'image(My_SR_OUT_L) ;
         wait for 10 ns;
         
         -- test pour decalage à droite
         My_SEL_FCT <= "0001";
         wait for 10 ns;
+        report "décalage a droite :";
         report " | SEL_FCT =" & integer'image(to_integer(unsigned(My_SEL_FCT))) & " | My_A = " & integer'image(to_integer(signed(My_A))) & " |My_B = " & integer'image(to_integer(signed(My_B)))  & " | S = " & integer'image(to_integer(signed(My_S))) & " | SR_IN_R = " & std_logic'image(My_SR_IN_R) & " | SR_IN_L = " & std_logic'image(My_SR_IN_L) & " |  SR_OUT_R = " & std_logic'image(My_SR_OUT_R) & " | SR_OUT_L = " & std_logic'image(My_SR_OUT_L) ;
         wait for 10 ns;
         
-        -- test pour addition simple
+        -- test pour addition avec retenue entrante
         My_SEL_FCT <= "1010";
         wait for 10 ns;
+        report "addition simple : ";
         report " | SEL_FCT=" & integer'image(to_integer(unsigned(My_SEL_FCT))) & " | My_A = " & integer'image(to_integer(signed(My_A))) & " |My_B = " & integer'image(to_integer(signed(My_B)))  & " | S = " & integer'image(to_integer(signed(My_S))) & " | SR_IN_R = " & std_logic'image(My_SR_IN_R) & " | SR_IN_L = " & std_logic'image(My_SR_IN_L) & " |  SR_OUT_R = " & std_logic'image(My_SR_OUT_R) & " | SR_OUT_L = " & std_logic'image(My_SR_OUT_L) ;
         wait;
         

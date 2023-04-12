@@ -99,10 +99,9 @@ architecture arch_ALUCompo of ALUCompo is
                       A_var(7 downto 4) := (others => A(3));
                       B_var(3 downto 0) := B;
                       B_var(7 downto 4) := (others => B(3));
-                      S_var := A_var + B_var;
-                      S_var := S_var + ("00000000" & SR_IN_R);
+                      S_var := A_var + B_var + SR_IN_R;
                       S <= S_var;
-                      SR_OUT_L <= '0';
+                      SR_OUT_L <= S_var(4);
                       SR_OUT_R <= '0';
 
                   when "1011" => -- S = A + B, pas de retenue d'entrée
