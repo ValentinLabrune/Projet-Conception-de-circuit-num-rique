@@ -37,9 +37,9 @@ architecture MemInstructionTestbench_Arch of MemInstructionTestbench is
 
         MemInstructionProc : process
         begin
-            My_clock_IN <= '0'
+            My_clock_IN <= '0';
             wait for 10 ns;
-            My_clock_IN <= '1'
+            My_clock_IN <= '1';
             wait for 10 ns;
             report "SEL FCT = " & integer'image(to_integer(unsigned(My_SEL_FCT_OUT)));
             report "SEL ROUTE = " & integer'image(to_integer(unsigned(My_SEL_ROUTE_OUT)));

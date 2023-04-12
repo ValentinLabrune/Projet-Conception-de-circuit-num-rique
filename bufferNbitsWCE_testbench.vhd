@@ -3,8 +3,8 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 use IEEE.std_logic_signed.all;
 
-entity BufferNbitsWBCETestbench is
-end BufferNbitsWBCETestbench;
+entity BufferNbitsWCETestbench is
+end BufferNbitsWCETestbench;
 
 architecture BufferNbitsWCETestbench_Arch of BufferNbitsWCETestbench is
 
@@ -40,30 +40,40 @@ begin
     BuffNbitsWCEProc : process
     begin
         -- initialisation
-        my_ce = '0';
-        my_reset = '1';
+        my_ce <= '0';
+        my_reset <= '1';
         wait for 5 ns;
-        my_reset = '0';
+        my_reset <= '0';
         wait for 5 ns;
 
         -- test 1
-        my_e = "11";
-        my_clock = '0';
+        my_e <= "11";
+        my_clock <= '0';
         wait for 5 ns;
-        my_clock = '1';
+        my_clock <= '1';
         wait for 5 ns;
         report " | E =" & integer'image(to_integer(unsigned(my_e))) & " | CE = " & std_logic'image(my_ce) & " | clock = " & std_logic'image(my_clock)  & " | reset = " & std_logic'image(my_reset) & " | s = " & integer'image(to_integer(unsigned(my_s)));
         wait for 5 ns;
 
         -- test 2
-        my_clock = '0';
+        my_clock <= '0';
         wait for 5 ns;
-        my_ce = '1';
+        my_ce <= '1';
         wait for 5 ns;
-        my_clock = '1';
+        my_clock <= '1';
+        wait for 5 ns;
+        report " | E =" & integer'image(to_integer(unsigned(my_e))) & " | CE = " & std_logic'image(my_ce) & " | clock = " & std_logic'image(my_clock)  & " | reset = " & std_logic'image(my_reset) & " | s = " & integer'image(to_integer(unsigned(my_s)));
+        wait for 5 ns;
+        
+        -- test memoire
+        my_clock <= '0';
+        my_ce <= '0';
+        wait for 5 ns;
+        my_e <= "00";
         wait for 5 ns;
         report " | E =" & integer'image(to_integer(unsigned(my_e))) & " | CE = " & std_logic'image(my_ce) & " | clock = " & std_logic'image(my_clock)  & " | reset = " & std_logic'image(my_reset) & " | s = " & integer'image(to_integer(unsigned(my_s)));
         wait;
+        
 
     end process;
 

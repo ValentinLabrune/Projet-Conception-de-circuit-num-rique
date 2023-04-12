@@ -18,7 +18,7 @@ end bufferNbitsWCE;
 
 architecture bufferNbitsWCE_Arch of bufferNbitsWCE is
 
-    signal my_e : std_logic_veactor(N-1 downto 0);
+    signal my_e : std_logic_vector(N-1 downto 0);
     signal my_ce : std_logic;
     signal my_reset, my_clock : std_logic;
     signal my_s : std_logic_vector (N-1 downto 0);
@@ -30,8 +30,12 @@ architecture bufferNbitsWCE_Arch of bufferNbitsWCE is
         begin 
             if (reset = '1') then
                 s <= (others => '0');
-            elsif (rising_edge(clock) and my_ce = '1') then
-                s <= e;
+            elsif (rising_edge(clock)) then
+            	report "clock " & std_logic'image(clock);
+            	if (ce = '1') then 
+                	report "ce here = " & std_logic'image(ce);
+                	s <= e;
+                  end if;
             end if;
         end process;
 
