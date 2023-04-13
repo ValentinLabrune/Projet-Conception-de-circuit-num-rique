@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.std_logic_unsigned.all;
 
-entity Microcontroleur 
+entity Microcontroleur is
 port(
     A_IN_G : in std_logic_vector (3 downto 0);
     B_IN_G : in std_logic_vector (3 downto 0);
@@ -63,20 +63,21 @@ architecture Microcontroleur_Arch of Microcontroleur is
     end component;
 
     -- signaux 
+    -- signaux sortant du mem instruction
+    signal SEL_FCT_OUT_MEM, SEL_ROUTE_OUT_MEM : std_logic_vector(3 downto 0);
+    signal SEL_OUT_OUT_MEM : std_logic_vector(1 downto 0);
+
+    -- signaux entrant et sortant des buffers Selfct et sel out
+    signal SEL_FCT_IN_BUF, SEL_FCT_OUT_BUF : std_logic_vector(3 downto 0);
+    signal SEL_OUT_IN_BUF, SEL_OUT_OUT_BUF : std_logic_vector(1 downto 0);
+
+    -- signaux entrant dans le big unit
+    signal SEL_FCT_IN_BU, SEL_ROUTE_IN_BU : std_logic_vector(3 downto 0);
+    signal SEL_OUT_IN_BU : std_logic_vector(1 downto 0);
+        
 
     begin 
-        -- signaux sortant du mem instruction
-        signal SEL_FCT_OUT_MEM, SEL_ROUTE_OUT_MEM : std_logic_vector(3 downto 0);
-        signal SEL_OUT_OUT_MEM : std_logic_vector(1 downto 0);
 
-        -- signaux entrant et sortant des buffers Selfct et sel out
-        signal SEL_FCT_IN_BUF, SEL_FCT_OUT_BUF : std_logic_vector(3 downto 0);
-        signal SEL_OUT_IN_BUF, SEL_OUT_OUT_BUF : std_logic_vector(1 downto 0);
-
-        -- signaux entrant dans le big unit
-        signal SEL_FCT_IN_BU, SEL_ROUTE_IN_BU : std_logic_vector(3 downto 0);
-        signal SEL_OUT_IN_BU : std_logic_vector(1 downto 0);
-        
         Memoire : MemInstruction
             port map(
                 reset_IN => reset_G ,

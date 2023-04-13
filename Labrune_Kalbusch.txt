@@ -1,0 +1,55 @@
+Résumé des entité
+
+ALUCompo : 
+c'est le coeur de calcul de notre microcontroleur,
+on lui donne 2 nombres en entrées et 2 retenues d'entrées
+et il nous donne le resultat de l'opération désignée par la fonction SEL_FCT donnée en entrée
+
+BufferNbits : 
+Lors d'un front montant de la clock, il stocke la valeur qu'il recoit entrée et est capable de la redistribuer en sorties
+
+BufferNbitsWCE :
+Lors d'un front montant de la clock, si le chip enabler est activé, c'est a dire égal à 1,
+Alors il stocke la valeur qu'il recoit en entrée
+
+BigUnit : 
+C'est l'interconnexion entre l'ALU, les Buffers et les fonctions d'instructions.
+
+MemInstruction : 
+C'est le block mémoire de notre microcontroleur, 
+C'est un tableau de 128 mots de 10bits chacun, 
+chaque mot correspond a un set d'instructions : SEL_FCT, SEL_ROUTE, SEL_OUT 
+
+microcontroleur : 
+c'est notre entité de niveau maximal qui regroupe toutes les entités qu'on a crée avant et les fait fonctionner ensemble
+
+
+Fonctions demandées :
+
+fonction 1 : RES_OUT = (A mult B)
+("0000011100"), A <= A_IN
+("0000111100"), B <= B_IN
+("1101000011"), S <= A*B et RES_OUT <= S
+
+fonction 2 : RES_OUT = (A add B) xnor A 
+("0000011100"), A <= A_IN 
+("0000111100"), B <= B_IN
+("1011000000"), S <= A+B
+("0000100000"), Mem_cache2 <= S
+("0000011100"), A <= A_IN 
+("0101000000"), S <= not A
+("0000010100"), A <= S
+("0000100100"), B <= Mem_cache2
+("1001000011"), S <= A xor B et RES_OUT <= S 
+
+fonction 3 : (A and B) or (A and B)
+("0000011100"), A <= A_IN
+("0000111100"), B <= B_IN
+("0111000000"), S <= A and B
+("0000100000"), Mem_cache2 <= S 
+("0000011100"), A <= A_IN
+("0000111100"), B <= B_IN
+("0111000000"), S <= A and B
+("0000010100"), A <= S 
+("0000100100"), B <= Mem_cache2
+("1000000011"), S <= A or B et RES_OUT <= S 
