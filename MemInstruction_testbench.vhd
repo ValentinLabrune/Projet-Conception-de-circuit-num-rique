@@ -38,7 +38,7 @@ architecture MemInstructionTestbench_Arch of MemInstructionTestbench is
         MemInstructionProc : process
         begin
         
-        	for i in 0 to 3 loop
+        	for i in 0 to 127 loop
             	My_clock_IN <= '0';
                 wait for 10 ns;
                 report "slot memoire n° " & integer'image(i);
